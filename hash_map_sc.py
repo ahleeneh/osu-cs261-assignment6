@@ -92,25 +92,42 @@ class HashMap:
         """
         TODO: Write this implementation
         """
-        pass
+        if self.table_load() >= 1:
+            self.resize_table(self._capacity * 2)
+
+        linked_list = self.find_linked_list(key)
+        node = linked_list.contains(key)
+        if node is not None:
+            node.value = value
+        else:
+            linked_list.insert(key, value)
+            self._size += 1
+
+        # key_index = self._hash_function(key) % self._capacity
+        # linked_list = self._buckets[key_index]
 
     def empty_buckets(self) -> int:
         """
         TODO: Write this implementation
         """
-        pass
+        tally = 0
+        for index in range(self._capacity):
+            if self._buckets[index].length() == 0:
+                tally += 1
+        return tally
 
     def table_load(self) -> float:
         """
         TODO: Write this implementation
         """
-        pass
+        return self._size / self._capacity
 
     def clear(self) -> None:
         """
         TODO: Write this implementation
         """
-        pass
+        self._buckets = DynamicArray()
+        self._size = 0
 
     def resize_table(self, new_capacity: int) -> None:
         """
@@ -122,25 +139,39 @@ class HashMap:
         """
         TODO: Write this implementation
         """
-        pass
+        linked_list = self.find_linked_list(key)
+        node = linked_list.contains(key)
+        if node is not None:
+            return node.value
+        return node
+
+        # key_index = self._hash_function(key) % self._capacity
+        # linked_list = self._buckets[key_index]
+        # node = self.find_linked_list(key).contains(key)
 
     def contains_key(self, key: str) -> bool:
         """
         TODO: Write this implementation
         """
-        pass
+        return bool(self.get(key))
 
     def remove(self, key: str) -> None:
         """
         TODO: Write this implementation
         """
-        pass
+        key_index = self._hash_function(key) % self._capacity
+        linked_list = self._buckets[key_index]
+        linked_list.remove(key)
 
     def get_keys_and_values(self) -> DynamicArray:
         """
         TODO: Write this implementation
         """
         pass
+
+    def find_linked_list(self, key: str):
+        key_index = self._hash_function(key) % self._capacity
+        return self._buckets[key_index]
 
 
 def find_mode(da: DynamicArray) -> (DynamicArray, int):
@@ -322,33 +353,33 @@ if __name__ == "__main__":
     print(m.get('key1'))
     m.remove('key4')
 
-    print("\nPDF - get_keys_and_values example 1")
-    print("------------------------")
-    m = HashMap(11, hash_function_2)
-    for i in range(1, 6):
-        m.put(str(i), str(i * 10))
-    print(m.get_keys_and_values())
+    # print("\nPDF - get_keys_and_values example 1")
+    # print("------------------------")
+    # m = HashMap(11, hash_function_2)
+    # for i in range(1, 6):
+    #     m.put(str(i), str(i * 10))
+    # print(m.get_keys_and_values())
+    #
+    # m.put('20', '200')
+    # m.remove('1')
+    # m.resize_table(2)
+    # print(m.get_keys_and_values())
 
-    m.put('20', '200')
-    m.remove('1')
-    m.resize_table(2)
-    print(m.get_keys_and_values())
+    # print("\nPDF - find_mode example 1")
+    # print("-----------------------------")
+    # da = DynamicArray(["apple", "apple", "grape", "melon", "peach"])
+    # mode, frequency = find_mode(da)
+    # print(f"Input: {da}\nMode : {mode}, Frequency: {frequency}")
+    #
+    # print("\nPDF - find_mode example 2")
+    # print("-----------------------------")
+    # test_cases = (
+    #     ["Arch", "Manjaro", "Manjaro", "Mint", "Mint", "Mint", "Ubuntu", "Ubuntu", "Ubuntu"],
+    #     ["one", "two", "three", "four", "five"],
+    #     ["2", "4", "2", "6", "8", "4", "1", "3", "4", "5", "7", "3", "3", "2"]
+    # )
 
-    print("\nPDF - find_mode example 1")
-    print("-----------------------------")
-    da = DynamicArray(["apple", "apple", "grape", "melon", "peach"])
-    mode, frequency = find_mode(da)
-    print(f"Input: {da}\nMode : {mode}, Frequency: {frequency}")
-
-    print("\nPDF - find_mode example 2")
-    print("-----------------------------")
-    test_cases = (
-        ["Arch", "Manjaro", "Manjaro", "Mint", "Mint", "Mint", "Ubuntu", "Ubuntu", "Ubuntu"],
-        ["one", "two", "three", "four", "five"],
-        ["2", "4", "2", "6", "8", "4", "1", "3", "4", "5", "7", "3", "3", "2"]
-    )
-
-    for case in test_cases:
-        da = DynamicArray(case)
-        mode, frequency = find_mode(da)
-        print(f"Input: {da}\nMode : {mode}, Frequency: {frequency}\n")
+    # for case in test_cases:
+    #     da = DynamicArray(case)
+    #     mode, frequency = find_mode(da)
+    #     print(f"Input: {da}\nMode : {mode}, Frequency: {frequency}\n")
