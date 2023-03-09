@@ -189,30 +189,7 @@ class HashMap:
         return self._buckets[key_index]
 
 
-# def find_mode(da: DynamicArray) -> (DynamicArray, int):
-#     """
-#     TODO: Write this implementation
-#     """
-#     map, highest_frequency = HashMap(), 0
-#     mode_da = DynamicArray()
-#
-#     for i in range(da.length()):
-#         value = map.get(da[i])
-#
-#         if value is not None:
-#             value += 1
-#         else:
-#             value = 1
-#         map.put(da[i], value)
-#
-#         if value == highest_frequency:
-#             mode_da.append(da[i])
-#         elif value > highest_frequency:
-#             mode_da = DynamicArray()
-#             mode_da.append(da[i])
-#             highest_frequency = value
-#
-#     return mode_da, highest_frequency
+# ---------------------------------------------------------------------- #
 
 
 def find_mode(da: DynamicArray) -> (DynamicArray, int):
@@ -238,9 +215,6 @@ def find_mode(da: DynamicArray) -> (DynamicArray, int):
 def find_mode_helper(map: HashMap, key) -> int:
     """
     TODO: Write this implementation
-    :param map:
-    :param key:
-    :return:
     """
     value = map.get(key)
     if value is not None:
