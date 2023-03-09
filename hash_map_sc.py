@@ -95,12 +95,12 @@ class HashMap:
         if self.table_load() >= 1:
             self.resize_table(self._capacity * 2)
 
-        linked_list = self.get_linked_list(key)
-        node = linked_list.contains(key)
+        sll = self.get_sll(key)
+        node = sll.contains(key)
         if node is not None:
             node.value = value
         else:
-            linked_list.insert(key, value)
+            sll.insert(key, value)
             self._size += 1
 
     def empty_buckets(self) -> int:
@@ -132,27 +132,25 @@ class HashMap:
         """
         TODO: Write this implementation
         """
-        if new_capacity < 1:
-            return
-        old_hash_map = self.get_keys_and_values()
+        if new_capacity > 0:
+            old_hashmap = self.get_keys_and_values()
+            self.resize_table_capacity(new_capacity)
+            self.clear()
+            for i in range(old_hashmap.length()):
+                k, v = old_hashmap[i]
+                self.put(k, v)
 
+    def resize_table_capacity(self, new_capacity: int) -> None:
         if self._is_prime(new_capacity):
             self._capacity = new_capacity
         else:
             self._capacity = self._next_prime(new_capacity)
 
-        self.clear()
-
-        for i in range(old_hash_map.length()):
-            tuple = old_hash_map[i]
-            key, value = tuple
-            self.put(key, value)
-
     def get(self, key: str):
         """
         TODO: Write this implementation
         """
-        node = self.get_linked_list(key).contains(key)
+        node = self.get_sll(key).contains(key)
         if node is not None:
             return node.value
         return node
@@ -161,7 +159,8 @@ class HashMap:
         """
         TODO: Write this implementation
         """
-        if self.get(key) is not None:
+        node = self.get_sll(key).contains(key)
+        if node is not None:
             return True
         return False
 
@@ -169,27 +168,23 @@ class HashMap:
         """
         TODO: Write this implementation
         """
-        linked_list = self.get_linked_list(key)
-        if linked_list.length() > 0 and linked_list.remove(key):
-            # if linked_list.remove(key):
-            # linked_list.remove(key)
-                self._size -= 1
-        # self.get_linked_list(key).remove(key)
+        sll = self.get_sll(key)
+        if sll.length() > 0 and sll.remove(key):
+            self._size -= 1
 
     def get_keys_and_values(self) -> DynamicArray:
         """
         TODO: Write this implementation
         """
-        hash_map = DynamicArray()
+        hashmap = DynamicArray()
         for i in range(self._capacity):
-            linked_list = self._buckets[i]
-            # if linked_list:
-            if linked_list.length() > 0:
-                for node in linked_list:
-                    hash_map.append((node.key, node.value))
-        return hash_map
+            sll = self._buckets[i]
+            if sll.length() > 0:
+                for node in sll:
+                    hashmap.append((node.key, node.value))
+        return hashmap
 
-    def get_linked_list(self, key: str):
+    def get_sll(self, key: str):
         key_index = self._hash_function(key) % self._capacity
         return self._buckets[key_index]
 
@@ -205,7 +200,7 @@ def find_mode(da: DynamicArray) -> (DynamicArray, int):
 
 # ------------------- BASIC TESTING ---------------------------------------- #
 
-# if __name__ == "__main__":
+if __name__ == "__main__":
 
     # print("\nPDF - put example 1")
     # print("-------------------")
@@ -287,35 +282,35 @@ def find_mode(da: DynamicArray) -> (DynamicArray, int):
     # m.clear()
     # print(m.get_size(), m.get_capacity())
     # #
-    # print("\nPDF - resize example 1")
-    # print("----------------------")
-    # m = HashMap(23, hash_function_1)
-    # m.put('key1', 10)
-    # print(m.get_size(), m.get_capacity(), m.get('key1'), m.contains_key('key1'))
-    # m.resize_table(30)
-    # print(m.get_size(), m.get_capacity(), m.get('key1'), m.contains_key('key1'))
+    print("\nPDF - resize example 1")
+    print("----------------------")
+    m = HashMap(23, hash_function_1)
+    m.put('key1', 10)
+    print(m.get_size(), m.get_capacity(), m.get('key1'), m.contains_key('key1'))
+    m.resize_table(30)
+    print(m.get_size(), m.get_capacity(), m.get('key1'), m.contains_key('key1'))
     #
-    # print("\nPDF - resize example 2")
-    # print("----------------------")
-    # m = HashMap(79, hash_function_2)
-    # keys = [i for i in range(1, 1000, 13)]
-    # for key in keys:
-    #     m.put(str(key), key * 42)
-    # print(m.get_size(), m.get_capacity())
-    # #
-    # for capacity in range(111, 1000, 117):
-    #     m.resize_table(capacity)
+    print("\nPDF - resize example 2")
+    print("----------------------")
+    m = HashMap(79, hash_function_2)
+    keys = [i for i in range(1, 1000, 13)]
+    for key in keys:
+        m.put(str(key), key * 42)
+    print(m.get_size(), m.get_capacity())
     #
-    #     m.put('some key', 'some value')
-    #     result = m.contains_key('some key')
-    #     m.remove('some key')
-    #
-    #     for key in keys:
-    #         # all inserted keys must be present
-    #         result &= m.contains_key(str(key))
-    #         # NOT inserted keys must be absent
-    #         result &= not m.contains_key(str(key + 1))
-    #     print(capacity, result, m.get_size(), m.get_capacity(), round(m.table_load(), 2))
+    for capacity in range(111, 1000, 117):
+        m.resize_table(capacity)
+
+        m.put('some key', 'some value')
+        result = m.contains_key('some key')
+        m.remove('some key')
+
+        for key in keys:
+            # all inserted keys must be present
+            result &= m.contains_key(str(key))
+            # NOT inserted keys must be absent
+            result &= not m.contains_key(str(key + 1))
+        print(capacity, result, m.get_size(), m.get_capacity(), round(m.table_load(), 2))
 
     # print("\nPDF - get example 1")
     # print("-------------------")
@@ -363,15 +358,15 @@ def find_mode(da: DynamicArray) -> (DynamicArray, int):
     #     result &= not m.contains_key(str(key + 1))
     # print(result)
     #
-    # print("\nPDF - remove example 1")
-    # print("----------------------")
-    # m = HashMap(53, hash_function_1)
-    # print(m.get('key1'))
-    # m.put('key1', 10)
-    # print(m.get('key1'))
-    # m.remove('key1')
-    # print(m.get('key1'))
-    # m.remove('key4')
+    print("\nPDF - remove example 1")
+    print("----------------------")
+    m = HashMap(53, hash_function_1)
+    print(m.get('key1'))
+    m.put('key1', 10)
+    print(m.get('key1'))
+    m.remove('key1')
+    print(m.get('key1'))
+    m.remove('key4')
     #
     # print("\nPDF - get_keys_and_values example 1")
     # print("------------------------")
