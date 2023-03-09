@@ -148,7 +148,7 @@ class HashMap:
 
     def get(self, key: str):
         """
-        TODO: Write this implementation
+        Determine the value associated with the specified key.
         """
         node = self.get_sll(key).contains(key)
         if node is not None:
@@ -189,18 +189,71 @@ class HashMap:
         return self._buckets[key_index]
 
 
+# def find_mode(da: DynamicArray) -> (DynamicArray, int):
+#     """
+#     TODO: Write this implementation
+#     """
+#     map, highest_frequency = HashMap(), 0
+#     mode_da = DynamicArray()
+#
+#     for i in range(da.length()):
+#         value = map.get(da[i])
+#
+#         if value is not None:
+#             value += 1
+#         else:
+#             value = 1
+#         map.put(da[i], value)
+#
+#         if value == highest_frequency:
+#             mode_da.append(da[i])
+#         elif value > highest_frequency:
+#             mode_da = DynamicArray()
+#             mode_da.append(da[i])
+#             highest_frequency = value
+#
+#     return mode_da, highest_frequency
+
+
 def find_mode(da: DynamicArray) -> (DynamicArray, int):
     """
     TODO: Write this implementation
     """
-    # if you'd like to use a hash map,
-    # use this instance of your Separate Chaining HashMap
-    map = HashMap()
+    map, mode_da, mode_frequency = HashMap(), DynamicArray(), 0
+
+    for i in range(da.length()):
+        # determine frequency of item in array and add key/value pair to map
+        value = find_mode_helper(map, da[i])
+
+        # add mode to new dynamic array
+        if value >= mode_frequency:
+            if value > mode_frequency:
+                mode_da = DynamicArray()
+                mode_frequency = value
+            mode_da.append(da[i])
+
+    return mode_da, mode_frequency
+
+
+def find_mode_helper(map: HashMap, key) -> int:
+    """
+    TODO: Write this implementation
+    :param map:
+    :param key:
+    :return:
+    """
+    value = map.get(key)
+    if value is not None:
+        value += 1
+    else:
+        value = 1
+    map.put(key, value)
+    return value
 
 
 # ------------------- BASIC TESTING ---------------------------------------- #
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
 
     # print("\nPDF - put example 1")
     # print("-------------------")
@@ -282,35 +335,35 @@ if __name__ == "__main__":
     # m.clear()
     # print(m.get_size(), m.get_capacity())
     # #
-    print("\nPDF - resize example 1")
-    print("----------------------")
-    m = HashMap(23, hash_function_1)
-    m.put('key1', 10)
-    print(m.get_size(), m.get_capacity(), m.get('key1'), m.contains_key('key1'))
-    m.resize_table(30)
-    print(m.get_size(), m.get_capacity(), m.get('key1'), m.contains_key('key1'))
+    # print("\nPDF - resize example 1")
+    # print("----------------------")
+    # m = HashMap(23, hash_function_1)
+    # m.put('key1', 10)
+    # print(m.get_size(), m.get_capacity(), m.get('key1'), m.contains_key('key1'))
+    # m.resize_table(30)
+    # print(m.get_size(), m.get_capacity(), m.get('key1'), m.contains_key('key1'))
+    # #
+    # print("\nPDF - resize example 2")
+    # print("----------------------")
+    # m = HashMap(79, hash_function_2)
+    # keys = [i for i in range(1, 1000, 13)]
+    # for key in keys:
+    #     m.put(str(key), key * 42)
+    # print(m.get_size(), m.get_capacity())
+    # #
+    # for capacity in range(111, 1000, 117):
+    #     m.resize_table(capacity)
     #
-    print("\nPDF - resize example 2")
-    print("----------------------")
-    m = HashMap(79, hash_function_2)
-    keys = [i for i in range(1, 1000, 13)]
-    for key in keys:
-        m.put(str(key), key * 42)
-    print(m.get_size(), m.get_capacity())
+    #     m.put('some key', 'some value')
+    #     result = m.contains_key('some key')
+    #     m.remove('some key')
     #
-    for capacity in range(111, 1000, 117):
-        m.resize_table(capacity)
-
-        m.put('some key', 'some value')
-        result = m.contains_key('some key')
-        m.remove('some key')
-
-        for key in keys:
-            # all inserted keys must be present
-            result &= m.contains_key(str(key))
-            # NOT inserted keys must be absent
-            result &= not m.contains_key(str(key + 1))
-        print(capacity, result, m.get_size(), m.get_capacity(), round(m.table_load(), 2))
+    #     for key in keys:
+    #         # all inserted keys must be present
+    #         result &= m.contains_key(str(key))
+    #         # NOT inserted keys must be absent
+    #         result &= not m.contains_key(str(key + 1))
+    #     print(capacity, result, m.get_size(), m.get_capacity(), round(m.table_load(), 2))
 
     # print("\nPDF - get example 1")
     # print("-------------------")
@@ -358,15 +411,15 @@ if __name__ == "__main__":
     #     result &= not m.contains_key(str(key + 1))
     # print(result)
     #
-    print("\nPDF - remove example 1")
-    print("----------------------")
-    m = HashMap(53, hash_function_1)
-    print(m.get('key1'))
-    m.put('key1', 10)
-    print(m.get('key1'))
-    m.remove('key1')
-    print(m.get('key1'))
-    m.remove('key4')
+    # print("\nPDF - remove example 1")
+    # print("----------------------")
+    # m = HashMap(53, hash_function_1)
+    # print(m.get('key1'))
+    # m.put('key1', 10)
+    # print(m.get('key1'))
+    # m.remove('key1')
+    # print(m.get('key1'))
+    # m.remove('key4')
     #
     # print("\nPDF - get_keys_and_values example 1")
     # print("------------------------")
@@ -385,7 +438,7 @@ if __name__ == "__main__":
     # da = DynamicArray(["apple", "apple", "grape", "melon", "peach"])
     # mode, frequency = find_mode(da)
     # print(f"Input: {da}\nMode : {mode}, Frequency: {frequency}")
-    #
+
     # print("\nPDF - find_mode example 2")
     # print("-----------------------------")
     # test_cases = (
