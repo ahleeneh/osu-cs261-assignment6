@@ -90,7 +90,10 @@ class HashMap:
 
     def put(self, key: str, value: object) -> None:
         """
-        TODO: Write this implementation
+        Update or insert the key/value pair into the HashMap.
+
+        :param key: key of key/value pair to put into a HashMap
+        :param value: value of key/value pair to put into a HashMap
         """
         if self.table_load() >= 1:
             self.resize_table(self._capacity * 2)
@@ -105,7 +108,9 @@ class HashMap:
 
     def empty_buckets(self) -> int:
         """
-        TODO: Write this implementation
+        Determine the number of empty buckets in the HashMap.
+
+        :return int: quantity of empty buckets in the HashMap
         """
         tally = 0
         for i in range(self._capacity):
@@ -115,13 +120,15 @@ class HashMap:
 
     def table_load(self) -> float:
         """
-        TODO: Write this implementation
+        Determine the load factor of the HashMap.
+
+        :return float: current HashMap load factor
         """
         return self._size / self._capacity
 
     def clear(self) -> None:
         """
-        TODO: Write this implementation
+        Clear the contents of the HashMap.
         """
         self._buckets = DynamicArray()
         self._size = 0
@@ -130,7 +137,9 @@ class HashMap:
 
     def resize_table(self, new_capacity: int) -> None:
         """
-        TODO: Write this implementation
+        Resize the HashMap and rehash all the existing key/value pairs.
+
+        :param new_capacity: capacity to resize HashMap to
         """
         if new_capacity > 0:
             old_hashmap = self.get_keys_and_values()
@@ -141,6 +150,11 @@ class HashMap:
                 self.put(k, v)
 
     def resize_table_capacity(self, new_capacity: int) -> None:
+        """
+        Helper method for resize_table() - change the capacity of the HashMap.
+
+        :param new_capacity: capacity to resize HashMap to
+        """
         if self._is_prime(new_capacity):
             self._capacity = new_capacity
         else:
@@ -149,6 +163,8 @@ class HashMap:
     def get(self, key: str):
         """
         Determine the value associated with the specified key.
+
+        :param key: key to find in a HashMap
         """
         node = self.get_sll(key).contains(key)
         if node is not None:
@@ -157,7 +173,11 @@ class HashMap:
 
     def contains_key(self, key: str) -> bool:
         """
-        TODO: Write this implementation
+        Determine if the value associated with the specified key exists in a
+        HashMap.
+
+        :param key: key to find in a HashMap
+        :return bool: True if key found in HashMap; false, otherwise.
         """
         node = self.get_sll(key).contains(key)
         if node is not None:
@@ -166,7 +186,9 @@ class HashMap:
 
     def remove(self, key: str) -> None:
         """
-        TODO: Write this implementation
+        Remove the specified key and its associated value from a HashMap.
+
+        :param key: key to find in a HashMap to delete key/value pair
         """
         sll = self.get_sll(key)
         if sll.length() > 0 and sll.remove(key):
@@ -174,7 +196,10 @@ class HashMap:
 
     def get_keys_and_values(self) -> DynamicArray:
         """
-        TODO: Write this implementation
+        Create a new DynamicArray object where each index contains a tuple of
+        all key/value pair stored in a HashMap.
+
+        :return DynamicArray: contains the key/value pairs stored in a HashMap
         """
         hashmap = DynamicArray()
         for i in range(self._capacity):
@@ -184,7 +209,14 @@ class HashMap:
                     hashmap.append((node.key, node.value))
         return hashmap
 
-    def get_sll(self, key: str):
+    def get_sll(self, key: str) -> LinkedList:
+        """
+        Helper method for put(), get(), contains_key(), remove() - determine
+        the singly linked list associated with the specified key in a HashMap.
+
+        :param key: key to find in a HashMap to find its singly linked list
+        :return LinkedList: a key's corresponding singly linked list
+        """
         key_index = self._hash_function(key) % self._capacity
         return self._buckets[key_index]
 
@@ -194,7 +226,11 @@ class HashMap:
 
 def find_mode(da: DynamicArray) -> (DynamicArray, int):
     """
-    TODO: Write this implementation
+    Create a new DynamicArray object that contains the mode values of a
+    DynamicArray and determine the highest frequency of a DynamicArray.
+
+    :param da: DynamicArray to find mode from
+    :return tuple: DynamicArray that contains mode values and mode frequency
     """
     map, mode_da, mode_frequency = HashMap(), DynamicArray(), 0
 
@@ -214,7 +250,12 @@ def find_mode(da: DynamicArray) -> (DynamicArray, int):
 
 def find_mode_helper(map: HashMap, key) -> int:
     """
-    TODO: Write this implementation
+    Helper method for find_mode() - add or update the key/value pair with the
+    associated key in HashMap.
+
+    :param map: HashMap to add or update key/value pair to
+    :param key: key to find in a HashMap to add or update key/value pair
+    :return int: temporary frequency of a specified key
     """
     value = map.get(key)
     if value is not None:
@@ -224,204 +265,3 @@ def find_mode_helper(map: HashMap, key) -> int:
     map.put(key, value)
     return value
 
-
-# ------------------- BASIC TESTING ---------------------------------------- #
-
-# if __name__ == "__main__":
-
-    # print("\nPDF - put example 1")
-    # print("-------------------")
-    # m = HashMap(53, hash_function_1)
-    # for i in range(150):
-    #     m.put('str' + str(i), i * 100)
-    #     if i % 25 == 24:
-    #         print(m.empty_buckets(), round(m.table_load(), 2), m.get_size(), m.get_capacity())
-    #
-    # print("\nPDF - put example 2")
-    # print("-------------------")
-    # m = HashMap(41, hash_function_2)
-    # for i in range(50):
-    #     m.put('str' + str(i // 3), i * 100)
-    #     if i % 10 == 9:
-    #         print(m.empty_buckets(), round(m.table_load(), 2), m.get_size(), m.get_capacity())
-    #
-    # print("\nPDF - empty_buckets example 1")
-    # print("-----------------------------")
-    # m = HashMap(101, hash_function_1)
-    # print(m.empty_buckets(), m.get_size(), m.get_capacity())
-    # m.put('key1', 10)
-    # print(m.empty_buckets(), m.get_size(), m.get_capacity())
-    # m.put('key2', 20)
-    # print(m.empty_buckets(), m.get_size(), m.get_capacity())
-    # m.put('key1', 30)
-    # print(m.empty_buckets(), m.get_size(), m.get_capacity())
-    # m.put('key4', 40)
-    # print(m.empty_buckets(), m.get_size(), m.get_capacity())
-    #
-    # print("\nPDF - empty_buckets example 2")
-    # print("-----------------------------")
-    # m = HashMap(53, hash_function_1)
-    # for i in range(150):
-    #     m.put('key' + str(i), i * 100)
-    #     if i % 30 == 0:
-    #         print(m.empty_buckets(), m.get_size(), m.get_capacity())
-    #
-    # print("\nPDF - table_load example 1")
-    # print("--------------------------")
-    # m = HashMap(101, hash_function_1)
-    # print(round(m.table_load(), 2))
-    # m.put('key1', 10)
-    # print(round(m.table_load(), 2))
-    # m.put('key2', 20)
-    # print(round(m.table_load(), 2))
-    # m.put('key1', 30)
-    # print(round(m.table_load(), 2))
-    #
-    # print("\nPDF - table_load example 2")
-    # print("--------------------------")
-    # m = HashMap(53, hash_function_1)
-    # for i in range(50):
-    #     m.put('key' + str(i), i * 100)
-    #     if i % 10 == 0:
-    #         print(round(m.table_load(), 2), m.get_size(), m.get_capacity())
-    #
-    # print("\nPDF - clear example 1")
-    # print("---------------------")
-    # m = HashMap(101, hash_function_1)
-    # print(m.get_size(), m.get_capacity())
-    # m.put('key1', 10)
-    # m.put('key2', 20)
-    # m.put('key1', 30)
-    # print(m.get_size(), m.get_capacity())
-    # m.clear()
-    # print(m.get_size(), m.get_capacity())
-    #
-    # print("\nPDF - clear example 2")
-    # print("---------------------")
-    # m = HashMap(53, hash_function_1)
-    # print(m.get_size(), m.get_capacity())
-    # m.put('key1', 10)
-    # print(m.get_size(), m.get_capacity())
-    # m.put('key2', 20)
-    # print(m.get_size(), m.get_capacity())
-    # m.resize_table(100)
-    # print(m.get_size(), m.get_capacity())
-    # m.clear()
-    # print(m.get_size(), m.get_capacity())
-    # #
-    # print("\nPDF - resize example 1")
-    # print("----------------------")
-    # m = HashMap(23, hash_function_1)
-    # m.put('key1', 10)
-    # print(m.get_size(), m.get_capacity(), m.get('key1'), m.contains_key('key1'))
-    # m.resize_table(30)
-    # print(m.get_size(), m.get_capacity(), m.get('key1'), m.contains_key('key1'))
-    # #
-    # print("\nPDF - resize example 2")
-    # print("----------------------")
-    # m = HashMap(79, hash_function_2)
-    # keys = [i for i in range(1, 1000, 13)]
-    # for key in keys:
-    #     m.put(str(key), key * 42)
-    # print(m.get_size(), m.get_capacity())
-    # #
-    # for capacity in range(111, 1000, 117):
-    #     m.resize_table(capacity)
-    #
-    #     m.put('some key', 'some value')
-    #     result = m.contains_key('some key')
-    #     m.remove('some key')
-    #
-    #     for key in keys:
-    #         # all inserted keys must be present
-    #         result &= m.contains_key(str(key))
-    #         # NOT inserted keys must be absent
-    #         result &= not m.contains_key(str(key + 1))
-    #     print(capacity, result, m.get_size(), m.get_capacity(), round(m.table_load(), 2))
-
-    # print("\nPDF - get example 1")
-    # print("-------------------")
-    # m = HashMap(31, hash_function_1)
-    # print(m.get('key'))
-    # m.put('key1', 10)
-    # print(m.get('key1'))
-    #
-    # print("\nPDF - get example 2")
-    # print("-------------------")
-    # m = HashMap(151, hash_function_2)
-    # for i in range(200, 300, 7):
-    #     m.put(str(i), i * 10)
-    # print(m.get_size(), m.get_capacity())
-    # for i in range(200, 300, 21):
-    #     print(i, m.get(str(i)), m.get(str(i)) == i * 10)
-    #     print(i + 1, m.get(str(i + 1)), m.get(str(i + 1)) == (i + 1) * 10)
-    #
-    # print("\nPDF - contains_key example 1")
-    # print("----------------------------")
-    # m = HashMap(53, hash_function_1)
-    # print(m.contains_key('key1'))
-    # m.put('key1', 10)
-    # m.put('key2', 20)
-    # m.put('key3', 30)
-    # print(m.contains_key('key1'))
-    # print(m.contains_key('key4'))
-    # print(m.contains_key('key2'))
-    # print(m.contains_key('key3'))
-    # m.remove('key3')
-    # print(m.contains_key('key3'))
-    #
-    # print("\nPDF - contains_key example 2")
-    # print("----------------------------")
-    # m = HashMap(79, hash_function_2)
-    # keys = [i for i in range(1, 1000, 20)]
-    # for key in keys:
-    #     m.put(str(key), key * 42)
-    # print(m.get_size(), m.get_capacity())
-    # result = True
-    # for key in keys:
-    #     # all inserted keys must be present
-    #     result &= m.contains_key(str(key))
-    #     # NOT inserted keys must be absent
-    #     result &= not m.contains_key(str(key + 1))
-    # print(result)
-    #
-    # print("\nPDF - remove example 1")
-    # print("----------------------")
-    # m = HashMap(53, hash_function_1)
-    # print(m.get('key1'))
-    # m.put('key1', 10)
-    # print(m.get('key1'))
-    # m.remove('key1')
-    # print(m.get('key1'))
-    # m.remove('key4')
-    #
-    # print("\nPDF - get_keys_and_values example 1")
-    # print("------------------------")
-    # m = HashMap(11, hash_function_2)
-    # for i in range(1, 6):
-    #     m.put(str(i), str(i * 10))
-    # print(m.get_keys_and_values())
-    #
-    # m.put('20', '200')
-    # m.remove('1')
-    # m.resize_table(2)
-    # print(m.get_keys_and_values())
-
-    # print("\nPDF - find_mode example 1")
-    # print("-----------------------------")
-    # da = DynamicArray(["apple", "apple", "grape", "melon", "peach"])
-    # mode, frequency = find_mode(da)
-    # print(f"Input: {da}\nMode : {mode}, Frequency: {frequency}")
-
-    # print("\nPDF - find_mode example 2")
-    # print("-----------------------------")
-    # test_cases = (
-    #     ["Arch", "Manjaro", "Manjaro", "Mint", "Mint", "Mint", "Ubuntu", "Ubuntu", "Ubuntu"],
-    #     ["one", "two", "three", "four", "five"],
-    #     ["2", "4", "2", "6", "8", "4", "1", "3", "4", "5", "7", "3", "3", "2"]
-    # )
-    #
-    # for case in test_cases:
-    #     da = DynamicArray(case)
-    #     mode, frequency = find_mode(da)
-    #     print(f"Input: {da}\nMode : {mode}, Frequency: {frequency}\n")
