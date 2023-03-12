@@ -96,12 +96,13 @@ class HashMap:
             self.resize_table(self._capacity * 2)
 
         entry, probe_i = self._quadratic_probe_insert(key)
-
         if entry is None or entry.is_tombstone:
             self._buckets[probe_i] = HashEntry(key, value)
             self._size += 1
-        elif entry.key == key:
+        else:
+            # replace contents of a hash entry that already exists in the map
             entry.value = value
+            entry.is_tombstone = False
 
     def table_load(self) -> float:
         """
@@ -154,8 +155,7 @@ class HashMap:
         entry = self._quadratic_probe_search(key)
         if entry is None or entry.is_tombstone:
             return None
-        elif entry.key == key:
-            return entry.value
+        return entry.value
 
     def contains_key(self, key: str) -> bool:
         """
@@ -177,10 +177,7 @@ class HashMap:
         :param key: key to find in a HashMap to delete key/value pair
         """
         entry = self._quadratic_probe_search(key)
-
-        if entry is None or entry.is_tombstone:
-            return
-        elif entry.key == key:
+        if entry and entry.key == key and entry.is_tombstone is False:
             entry.is_tombstone = True
             self._size -= 1
 
@@ -277,7 +274,7 @@ class HashMapIterator:
             raise StopIteration
 
         node, size = self._map[self._idx], self._map.length() - 1
-        while node is None and self._idx < size or node and node.is_tombstone:
+        while (node is None and self._idx < size) or (node and node.is_tombstone):
             self._idx += 1
             node = self._map[self._idx]
 
