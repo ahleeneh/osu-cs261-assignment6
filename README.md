@@ -1,5 +1,5 @@
 # osu-cs261-assignment6
-This project was created by Aline Murillo during the Winter 2022 Term for Oregon State University's Data Structures course.
+This project was created by Aline Murillo during the Winter 2023 Term for Oregon State University's Data Structures course.
 
 ## 🔗 Part 1 - Hash Map Implementation - Chaining
 1. Implement the HashMap class by completing the following methods: put(), get(), remove(), contains_key(), clear(), empty_buckets(), resize_table(), table_load(), get_keys(), and find_mode().
